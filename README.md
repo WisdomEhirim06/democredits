@@ -291,8 +291,8 @@ npm test
 ## Design Decisions
 
 ### Architecture
-- **Service-oriented OOP** — Business logic lives in service classes (`UserService`, `WalletService`, `AuthService`, `KarmaService`), keeping controllers thin and testable.
-- **Dependency injection** — Services accept dependencies via constructor for easy mocking in tests.
+- **Service-oriented OOP** - Business logic lives in service classes (`UserService`, `WalletService`, `AuthService`, `KarmaService`), keeping controllers thin and testable.
+- **Dependency injection** - Services accept dependencies via constructor for easy mocking in tests.
 
 ### Transaction Scoping
 - All financial operations (`fund`, `transfer`, `withdraw`) are wrapped in **Knex database transactions** to ensure atomicity.
@@ -300,7 +300,7 @@ npm test
 - Transfer operations acquire wallet locks in **user ID order** to prevent deadlocks.
 
 ### Authentication
-- Faux JWT tokens using **HMAC-SHA256** signatures — not a production JWT library, but functionally equivalent for this MVP.
+- Faux JWT tokens using **HMAC-SHA256** signatures - not a production JWT library, but functionally equivalent for this MVP.
 - Token verification includes signature validation and expiration checks.
 
 ### Karma Blacklist
@@ -312,6 +312,6 @@ npm test
 - Global error middleware maps errors to consistent JSON responses with appropriate HTTP status codes.
 
 ### Testing Strategy
-- **In-memory SQLite** for tests — fast, isolated, no external dependencies.
+- **In-memory SQLite** for tests - fast, isolated, no external dependencies.
 - Both **unit tests** (service layer) and **integration tests** (HTTP endpoints via Supertest).
 - Karma service is **mocked** in tests to avoid external API calls.
