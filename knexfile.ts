@@ -15,6 +15,17 @@ const seeds: Knex.SeederConfig = {
 };
 
 const config: Record<string, Knex.Config> = {
+    // Local development using SQLite — no MySQL needed
+    local: {
+        client: 'better-sqlite3',
+        connection: {
+            filename: path.join(__dirname, 'democredit_local.sqlite3'),
+        },
+        useNullAsDefault: true,
+        migrations,
+        seeds,
+    },
+
     development: {
         client: 'mysql2',
         connection: {

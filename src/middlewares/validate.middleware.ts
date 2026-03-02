@@ -13,10 +13,13 @@ type ValidationSchema = Record<string, {
  */
 export function validate(schema: ValidationSchema) {
     return (req: Request, _res: Response, next: NextFunction): void => {
+        // Express v5 can leave req.body as undefined if Content-Type header is missing.
+        // Default to empty object so validation produces proper "field is required" errors.
+        const body: Record<string, unknown> = req.body ?? {};
         const errors: string[] = [];
 
         for (const [field, rules] of Object.entries(schema)) {
-            const value = req.body[field];
+            const value = body[field];
 
             // Check required
             if (rules.required && (value === undefined || value === null || value === '')) {
