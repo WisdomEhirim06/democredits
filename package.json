@@ -2,11 +2,11 @@
   "name": "democredits",
   "version": "1.0.0",
   "description": "Demo Credit wallet service MVP - Lendsqr Backend Assessment",
-  "main": "dist/server.js",
+  "main": "dist/src/server.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=local ts-node src/server.ts",
     "build": "tsc",
-    "start": "node dist/server.js",
+    "start": "node dist/src/server.js",
     "test": "cross-env NODE_ENV=test jest --forceExit --detectOpenHandles --verbose",
     "migrate": "cross-env NODE_ENV=local ts-node node_modules/.bin/knex migrate:latest --knexfile knexfile.ts",
     "migrate:rollback": "cross-env NODE_ENV=local ts-node node_modules/.bin/knex migrate:rollback --knexfile knexfile.ts",
