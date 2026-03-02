@@ -5,11 +5,15 @@ const PORT = process.env.PORT || 3000;
 const env = process.env.NODE_ENV || 'development';
 
 async function start(): Promise<void> {
-    // Auto-run migrations for local SQLite so no separate migrate step is needed
-    if (env === 'local' || env === 'test') {
+    // Auto-run migrations on startup for all environments
+    // (local/test use SQLite, production uses MySQL — both work with Knex)
+    try {
         console.log(`[DB] Running migrations for "${env}" environment...`);
         await db.migrate.latest();
         console.log('[DB] Migrations up to date ✓');
+    } catch (err) {
+        console.error('[DB] Migration failed:', err);
+        process.exit(1);
     }
 
     app.listen(PORT, () => {
