@@ -8,17 +8,18 @@ dotenv.config();
 const isCompiledJS = __filename.endsWith('.js');
 
 const migrations: Knex.MigratorConfig = {
-    // In compiled production: __dirname is dist/, so migrations are in dist/src/database/migrations (as .js)
-    // In ts-node local: __dirname is project root, migrations are in src/database/migrations (as .ts)
     directory: isCompiledJS
         ? path.join(__dirname, 'src', 'database', 'migrations')
         : path.join(__dirname, 'src', 'database', 'migrations'),
     extension: isCompiledJS ? 'js' : 'ts',
+    // Explicitly limit to .js files in production to avoid loading .d.ts declaration files
+    ...(isCompiledJS ? { loadExtensions: ['.js'] } : {}),
 };
 
 const seeds: Knex.SeederConfig = {
     directory: path.join(__dirname, 'src', 'database', 'seeds'),
     extension: isCompiledJS ? 'js' : 'ts',
+    ...(isCompiledJS ? { loadExtensions: ['.js'] } : {}),
 };
 
 const config: Record<string, Knex.Config> = {
