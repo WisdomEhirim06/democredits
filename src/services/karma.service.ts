@@ -42,13 +42,11 @@ export class KarmaService {
                 }
             );
 
-            // Log the full response so we can debug what Adjutor is returning
-            console.log(`[KarmaService] Identity: ${identity}`);
-            console.log(`[KarmaService] Status: ${response.status}`);
-            console.log(`[KarmaService] Body: ${JSON.stringify(response.data)}`);
+            console.log(`[KarmaService] Status: ${response.status}, Identity: ${identity}`);
 
             // 404 = user is NOT in the karma list — safe to onboard
             if (response.status === 404) {
+                console.log('[KarmaService] User not found in karma list — safe to onboard.');
                 return false;
             }
 
@@ -58,8 +56,16 @@ export class KarmaService {
                 return false;
             }
 
-            // 200 with a non-empty data object = user IS blacklisted.
-            // We check Object.keys().length > 0 to guard against empty {} responses
+            // Detect Adjutor test mode: the API returns a "mock-response" field
+            // when the app is in test mode. In test mode, ALL lookups return a fake
+            // karma record, so we must treat this as "not blacklisted".
+            if (response.data?.['mock-response']) {
+                console.warn('[KarmaService] Adjutor is in TEST MODE — mock response detected. Treating as not blacklisted.');
+                console.warn('[KarmaService] Toggle your Adjutor app to LIVE MODE at https://app.adjutor.io to use real karma data.');
+                return false;
+            }
+
+            // 200 with a non-empty data object = user IS blacklisted in live mode
             if (
                 response.status === 200 &&
                 response.data?.status === 'success' &&
@@ -67,6 +73,7 @@ export class KarmaService {
                 typeof response.data.data === 'object' &&
                 Object.keys(response.data.data).length > 0
             ) {
+                console.log(`[KarmaService] User ${identity} found in karma blacklist.`);
                 return true;
             }
 
