@@ -38,10 +38,14 @@ export class KarmaService {
                     headers: {
                         Authorization: `Bearer ${this.apiKey}`,
                     },
-                    // Don't throw on 4xx so we can handle them gracefully
                     validateStatus: (status) => status < 500,
                 }
             );
+
+            // Log the full response so we can debug what Adjutor is returning
+            console.log(`[KarmaService] Identity: ${identity}`);
+            console.log(`[KarmaService] Status: ${response.status}`);
+            console.log(`[KarmaService] Body: ${JSON.stringify(response.data)}`);
 
             // 404 = user is NOT in the karma list — safe to onboard
             if (response.status === 404) {
@@ -56,7 +60,6 @@ export class KarmaService {
 
             // 200 with a non-empty data object = user IS blacklisted.
             // We check Object.keys().length > 0 to guard against empty {} responses
-            // (an empty object is truthy in JS but doesn't mean the user is blacklisted).
             if (
                 response.status === 200 &&
                 response.data?.status === 'success' &&
